@@ -2,6 +2,8 @@
 
 I am passionate about "AI for Good" projects, and I have conceived an idea to develop an AI system that translates sign language. I aim to create a solution that is not only technically impressive but also genuinely beneficial for the community. My vision is to go beyond merely recognizing individual letters (fingerspelling) and instead provide live captions for sign language without requiring specialized hardware like gloves or glasses.
 
+https://github.com/user-attachments/assets/b32dcee6-0aa8-4a6d-98e5-a2c9e586ddea
+
 ## I. Proposed solution
 
 Our input will be a video of deaf individuals using sign language and the output will be the corresponding English text. The solution pipeline is structured as follows:
@@ -192,7 +194,7 @@ This is the core of the system, which orchestrates data preparation, training, e
 
 ### 4. Model Serving 🌐
 
-The best model is converted to [TFLite](https://ai.google.dev/edge/litert) for efficient inference and deployed as a [FastAPI](https://fastapi.tiangolo.com/) endpoint ([serving/pose2gloss.py](./serving/pose2gloss.py)). Endpoints include `/predict` (returns top-N glosses with scores), `/health`, and `/metadata`, using [Pydantic](https://docs.pydantic.dev/latest/) for request/response validation:
+The best model is converted to [TFLite](https://ai.google.dev/edge/litert) for efficient inference and deployed as a [FastAPI](https://fastapi.tiangolo.com/) endpoint ([serving/pose2gloss.py](./serving/pose2gloss.py)). Endpoints include `/predict` (returns top-N glosses with scores), `/health`, and `/metadata`, using [Pydantic](./serving/schemas.py) for request/response validation:
 
 -   **TFLite Conversion**: Converting the model to [TFLite](https://ai.google.dev/edge/litert) reduces inference latency and memory usage, critical for real-time applications like **ASL** translation. This optimization ensures the system can run on resource-constrained environments (e.g., local machines).
 -   **FastAPI Endpoints**: The `/predict` endpoint leverages the top-N gloss prediction strategy (top-5 accuracy **`~87%`**), enhancing translation quality. `/health` and `/metadata` endpoints will provide operational insights, aligning with production best practices.
@@ -259,4 +261,6 @@ Initially, our project will concentrate on **American Sign Language**. In future
 
     -   **Visual Context**: Integrating object detection or scene analysis can enhance understanding (e.g., recognizing a kitchen setting to interpret relevant signs).
 
-For the demonstration, I envision creating an extension for video conferencing platforms like Google Meet to generate live captions for deaf individuals. However, I recognize that this concept primarily aids non-signers in understanding deaf individuals rather than empowering deaf people to communicate effectively. My current time constraints prevent me from implementing a text-to-sign feature, so for now, I can only conceptualize this one-way communication demo, rather than a two-way interaction that facilitates communication from deaf individuals back to others.
+For the demonstration, I envision creating an extension for video conferencing platforms like Google Meet to generate live captions for deaf individuals. However, I recognize that this concept primarily aids non-signers in understanding deaf individuals rather than empowering deaf people to communicate effectively.
+
+My current time constraints prevent me from implementing a text-to-sign feature, so for now, I can only conceptualize this one-way communication demo, rather than a two-way interaction that facilitates communication from deaf individuals back to others.
