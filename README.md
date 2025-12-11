@@ -4,26 +4,30 @@ I am passionate about "AI for Good" projects, and I have conceived an idea to de
 
 https://github.com/user-attachments/assets/b32dcee6-0aa8-4a6d-98e5-a2c9e586ddea
 
+> This repository contains my team's final project, with a grade of **97/100**, for the **Artificial Intelligence Studio** subject at **University of Technology Sydney** (UTS) taught by [Vahid Behbood](https://profiles.uts.edu.au/Vahid.Behbood).
+
 ## I. Proposed solution
 
 Our input will be a video of deaf individuals using sign language and the output will be the corresponding English text. The solution pipeline is structured as follows:
 
 **1. Pose-to-Gloss**:
 
--   I utilized [MediaPipe](https://ai.google.dev/edge/mediapipe/solutions/guide) to extract facial and hand landmarks from each frame. These coordinates will be formatted correctly and fed into a **Transformer** model. The goal is to classify the isolated signs or glosses represented by these coordinates. This approach has several advantages:
+I utilized [MediaPipe](https://ai.google.dev/edge/mediapipe/solutions/guide) to extract facial and hand landmarks from each frame. These coordinates will be formatted correctly and fed into a **Transformer** model. The goal is to classify the isolated signs or glosses represented by these coordinates. This approach has several advantages:
 
-    -   By using key points instead of raw video data, we can streamline processing. We only need to analyze a small set of coordinates (3 for each point) per frame, significantly improving efficiency for real-time applications. Additionally, key points are less affected by varying backgrounds, hand sizes, skin tones, and other factors that complicate traditional image classification models.
-    -   A sequence model will allow us to learn both temporal and spatial information (hand movements) from sequences of key points across frames, rather than classifying each frame in isolation, which can prolong prediction times.
+-   By using key points instead of raw video data, we can streamline processing. We only need to analyze a small set of coordinates (3 for each point) per frame, significantly improving efficiency for real-time applications. Additionally, key points are less affected by varying backgrounds, hand sizes, skin tones, and other factors that complicate traditional image classification models.
+-   A sequence model will allow us to learn both temporal and spatial information (hand movements) from sequences of key points across frames, rather than classifying each frame in isolation, which can prolong prediction times.
 
--   I intend to collect and preprocess the [WLASL](https://arxiv.org/pdf/1910.11006v2) dataset to train our **Pose-to-Gloss** model. Although this dataset contains around **2000 classes**, it is limited to about **5-6 examples per word**, which is very sparse. Therefore, I adapted the [best solution](https://www.kaggle.com/competitions/asl-signs/discussion/406684) from the [Google - Isolated Sign Language Recognition competition](https://www.kaggle.com/competitions/asl-signs) on **Kaggle**, which utilizes a **Conv1D-Transformer** model.
+> [!NOTE]  
+> I intend to collect and preprocess the [WLASL](https://arxiv.org/pdf/1910.11006v2) dataset to train our **Pose-to-Gloss** model. Although this dataset contains around **2000 classes**, it is limited to about **5-6 examples per word**, which is very sparse. Therefore, I adapted the [best solution](https://www.kaggle.com/competitions/asl-signs/discussion/406684) from the [Google - Isolated Sign Language Recognition competition](https://www.kaggle.com/competitions/asl-signs) on **Kaggle**, which utilizes a **Conv1D-Transformer** model.
 
 **2. Gloss-to-Text**: This step involves translating the sequence of glosses into coherent, readable English text. As this is primarily a translation task, I simply employed prompt engineering with [OpenAI's GPT-4o mini](https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/) to convert our classifier's gloss outputs into their appropriate translations without any additional fine-tuning.
 
 ## II. Product High-level Design
 
-The system is structured as a pipeline with distinct subsystems: [**Data Sources**](#1-data-sources-), [**Feature Store**](#2-feature-store-️), [**MLOps Pipeline**](#3-mlops-pipeline-clearml-), [**Model Serving**](#4-model-serving-), [**Gloss-to-Text Translation**](#5-gloss-to-text-translation-), [**CI/CD Pipeline**](#6-cicd-pipeline-), and [**User Interface**](#7-user-interface-️). Each subsystem is meticulously designed to handle specific aspects of the **ASL** translation workflow, from raw video data to a user-facing [Streamlit](https://streamlit.io/) app that provides real-time translations. The design integrates [ClearML](https://clear.ml/) for MLOps automation, **GitHub Actions** for CI/CD, [FastAPI](https://fastapi.tiangolo.com/) for model serving, and [GPT-4o mini](https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/) for natural language translation, culminating in a production-ready solution.
+The system is structured as a pipeline with distinct subsystems: [**Data Sources**](#1-data-sources-), [**Feature Store**](#2-feature-store-️), [**MLOps Pipeline**](#3-mlops-pipeline-clearml-), [**Model Serving**](#4-model-serving-), [**Gloss-to-Text Translation**](#5-gloss-to-text-translation-), [**CI/CD Pipeline**](#6-cicd-pipeline-), and [**User Interface**](#7-user-interface-️). Each subsystem is meticulously designed to handle specific aspects of the **ASL** translation workflow, from raw video data to a user-facing [Streamlit](https://streamlit.io/) app that provides real-time translations. The design integrates [ClearML](https://clear.ml/) for MLOps automation, [GitHub Actions](https://github.com/18520339/islr-mlops/actions/runs/15134432819) for CI/CD, [FastAPI](https://fastapi.tiangolo.com/) for model serving, and [OpenAI's GPT-4o mini](https://openai.com/index/gpt-4o-mini-advancing-cost-efficient-intelligence/) for natural language translation, culminating in a production-ready solution.
 
-👉 Check the [docs](./docs/) folders for more information about the implementation.
+> [!IMPORTANT]
+> Check the [docs](./docs/) folders for more information about the implementation.
 
 ```mermaid
 graph TD
@@ -209,8 +213,8 @@ Using **top-5** glosses with scores allows [GPT-4o mini](https://openai.com/inde
 
 This repository uses GitHub Actions ([.github/workflows/pipeline.yml](./.github/workflows/pipeline.yml)) for **CI/CD**:
 
--   **CI** includes testing ([cicd/example_task.py](./cicd/example_task.py)), [pipeline execution](./pipeline_from_tasks.py), and reporting metrics as PR comments ([cicd/pipeline_reports.py](./cicd/pipeline_reports.py))
--   **CD** tags the pipeline ([cicd/production_tagging.py](./cicd/production_tagging.py)) for production and [deploys](./serving/pose2gloss.py) the [FastAPI](https://fastapi.tiangolo.com/) endpoint to a localhost simulation.
+-   **CI** includes testing ([cicd/example_task.py](./cicd/example_task.py)), pipeline execution ([./pipeline_from_tasks.py](./pipeline_from_tasks.py)), and reporting metrics as PR comments ([cicd/pipeline_reports.py](./cicd/pipeline_reports.py))
+-   **CD** tags the pipeline ([cicd/production_tagging.py](./cicd/production_tagging.py)) for production and deploys the FastAPI endpoint to a localhost simulation ([serving/pose2gloss.py](./serving/pose2gloss.py)).
 
 ### 7. User Interface 🖥️
 
@@ -251,16 +255,13 @@ The Streamlit UI ([streamlit_app.py](./apps/streamlit_app.py)) provides a real-t
 
 Initially, our project will concentrate on **American Sign Language**. In future iterations, I plan to incorporate multilingual capabilities along with the following features:
 
--   Converting the output from text to audio.
--   Managing multiple signers within a single frame.
--   Implementing temporal segmentation to identify which frames contain sign language, enhancing translation accuracy and speed by allowing us to disregard irrelevant video content during inference.
--   Developing an end-to-end model for direct **Pose-to-Text** or even **Pose-to-Audio**. However, I anticipate challenges in processing entire videos compared to a defined set of key points.
--   Utilizing multimodal inputs to improve translation accuracy:
+-   [ ] Converting the output from text to audio.
+-   [ ] Managing multiple signers within a single frame.
+-   [ ] Implementing temporal segmentation to identify which frames contain sign language, enhancing translation accuracy and speed by allowing us to disregard irrelevant video content during inference.
+-   [ ] Developing an end-to-end model for direct **Pose-to-Text** or even **Pose-to-Audio**. However, I anticipate challenges in processing entire videos compared to a defined set of key points.
+-   [ ] Utilizing multimodal inputs to improve translation accuracy:
+    -   [ ] **Audio Context**: In mixed environments, incorporating audio from non-signers can provide context, helping to disambiguate signs based on spoken topics.
+    -   [ ] **Visual Context**: Integrating object detection or scene analysis can enhance understanding (e.g., recognizing a kitchen setting to interpret relevant signs).
 
-    -   **Audio Context**: In mixed environments, incorporating audio from non-signers can provide context, helping to disambiguate signs based on spoken topics.
-
-    -   **Visual Context**: Integrating object detection or scene analysis can enhance understanding (e.g., recognizing a kitchen setting to interpret relevant signs).
-
-For the demonstration, I envision creating an extension for video conferencing platforms like Google Meet to generate live captions for deaf individuals. However, I recognize that this concept primarily aids non-signers in understanding deaf individuals rather than empowering deaf people to communicate effectively.
-
-My current time constraints prevent me from implementing a text-to-sign feature, so for now, I can only conceptualize this one-way communication demo, rather than a two-way interaction that facilitates communication from deaf individuals back to others.
+> [!WARNING]
+> For the demonstration, I envision creating an extension for video conferencing platforms like Google Meet to generate live captions for deaf individuals. However, I recognize that this concept primarily aids non-signers in understanding deaf individuals rather than empowering deaf people to communicate effectively. My current time constraints prevent me from implementing a **text-to-sign** feature, so for now, I can only conceptualize this one-way communication demo, rather than a two-way interaction that facilitates communication from deaf individuals back to others.
