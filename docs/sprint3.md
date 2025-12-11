@@ -1,9 +1,9 @@
 # Sprint 3: Develop, Test and Deploy MLOps ([MLOps Level 2](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning#mlops_level_2_cicd_pipeline_automation))
 
-This [MLOps level 2](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning#mlops_level_2_cicd_pipeline_automation) stage is for a rapid and reliable update of the pipelines in production. In this sprint, for the product MLOPs, I will use [ClearML](https://clear.ml/) to:
+This [MLOps level 2](https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning#mlops_level_2_cicd_pipeline_automation) stage is for rapid, reliable updates to pipelines in production. In this sprint, for the product MLOPs, I will use [ClearML](https://clear.ml/) to:
 
--   Develop and deploy CI/CD pipeline using Github Actions.
--   Develop and deploy Hyper Parameter Tuning component with ClearML's [HyperParameterOptimizer](https://clear.ml/docs/latest/docs/guides/optimization/hyper-parameter-optimization/examples_hyperparam_opt).
+-   Develop and deploy a CI/CD pipeline using GitHub Actions.
+-   Develop and deploy the Hyperparameter Tuning component with ClearML's [HyperParameterOptimizer](https://clear.ml/docs/latest/docs/guides/optimization/hyper-parameter-optimization/examples_hyperparam_opt).
 -   Develop and deploy [multi-model training](../pose2gloss/step4_model_training.py) and [model selection](../pose2gloss/step5_model_selection.py) components.
 -   Implement the product [user interface](../apps/streamlit_app.py) using [Streamlit](https://streamlit.io/).
 
